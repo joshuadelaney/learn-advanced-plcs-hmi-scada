@@ -146,6 +146,186 @@ Control panel in manual/Hand S3 (H), will allow, via the manual screen on HMI to
 | H5 -VALVE 1      | DO-Bool   | Q0.4         |       |
 | H6-VALVE 2       | DO-Bool   | Q0.5         |       |
 
+### Question 2 Answer
+
+To design a PLC program for the water harvester system using TIA Portal, we need to create a structured program that includes handling automatic and manual modes, ensuring safety protections, and operating valves and pumps based on the specified conditions.
+
+#### Step-by-Step Program Design
+
+##### 1. Define Inputs and Outputs
+
+**Inputs:**
+
+- `ES1`: Emergency Stop (I0.0)
+- `S1`: Stop (I0.1)
+- `S2`: Start (I0.2)
+- `S3`: Hand (Manual Mode) (I0.3)
+- `S3`: Auto (Automatic Mode) (I0.4)
+- `S4`: Tank 1 in Service (I0.5)
+- `S5`: Tank 2 in Service (I0.6)
+- `KM1`: Auxiliary (I0.7)
+- `F1`: Overload (I1.0)
+- `B1`: Storage Tank Low (I1.1)
+- `B2`: Tank 1 Low (I1.2)
+- `B3`: Tank 1 High (I1.3)
+- `B4`: Tank 2 Low (I1.4)
+- `B5`: Tank 2 High (I1.5)
+
+**Outputs:**
+
+- `PUMP`: Pump (Q0.0)
+- `H2`: Overload/Emergency Stop Indicator (Q0.1)
+- `H3`: Discharge Valve (DV) (Q0.2)
+- `H4`: Pump Running Indicator (Q0.3)
+- `H5`: Valve 1 (Tank 1) (Q0.4)
+- `H6`: Valve 2 (Tank 2) (Q0.5)
+
+##### 2. Establish Basic Program Structure
+
+Create networks for initial checks, automatic mode operations, manual mode operations, and safety protections.
+
+##### 3. Implement Safety Protections
+
+Network 1: Emergency Stop (ES1) and Overload (F1)
+
+```ladder
+// Emergency Stop and Overload Logic
+A I0.0 // ES1 Emergency Stop
+A I1.0 // F1 Overload
+= Q0.1 // H2 OL/ES Indicator
+R Q0.0 // PUMP
+R Q0.2 // Discharge Valve (DV)
+R Q0.4 // V1
+R Q0.5 // V2
+```
+
+##### 4. Implement Start/Stop Logic
+
+Network 2: Start and Stop Operations
+
+```ladder
+// Start and Stop Logic
+A I0.2 // S2 Start
+A I0.4 // S3 Auto
+= M0.0 // Auto Mode Active
+
+A I0.1 // S1 Stop
+= M0.1 // Stop Active
+
+A M0.0
+AN M0.1
+= M0.2 // System Running
+```
+
+###### 5. Automatic Mode Operation
+
+Network 3: Tank 1 Filling Logic
+
+```ladder
+// Tank 1 Filling Logic in Auto Mode
+A M0.2 // System Running
+A I0.5 // Tank 1 in Service
+A I1.2 // Tank 1 Low
+A I1.1 // Storage Tank has Water
+= M0.3 // Start Filling Tank 1
+
+// Start Pump and Open Valves
+A M0.3
+= Q0.0 // Start Pump
+L S5T#3s // 3 Second Timer
+A Q0.0 // Pump Running
+= Q0.2 // Open Discharge Valve (DV)
+
+A Q0.2
+= Q0.4 // Open V1
+
+// Stop Filling Tank 1
+A I1.3 // Tank 1 High
+= R Q0.4 // Close V1
+= R Q0.2 // Close DV
+= R Q0.0 // Stop Pump if not filling Tank 2
+```
+
+Network 4: Tank 2 Filling Logic
+
+```ladder
+// Tank 2 Filling Logic in Auto Mode
+A M0.2 // System Running
+A I0.6 // Tank 2 in Service
+A I1.4 // Tank 2 Low
+A I1.1 // Storage Tank has Water
+= M0.4 // Start Filling Tank 2
+
+// Start Pump and Open Valves
+A M0.4
+= Q0.0 // Start Pump
+L S5T#3s // 3 Second Timer
+A Q0.0 // Pump Running
+= Q0.2 // Open DV
+
+A Q0.2
+= Q0.5 // Open V2
+
+// Stop Filling Tank 2
+A I1.5 // Tank 2 High
+= R Q0.5 // Close V2
+= R Q0.2 // Close DV
+= R Q0.0 // Stop Pump if not filling Tank 1
+```
+
+###### 6. Manual Mode Operation
+
+Network 5: Manual Mode Control
+
+```ladder
+// Manual Control for Valves and Pump
+
+// Check if the system is in Manual Mode and if the Storage Tank has Water
+A I0.3 // Manual Mode (S3 HAND)
+A I1.1 // Storage Tank has Water (B1 STORAGE TANK LOW)
+
+// Manual Pump Control
+A M0.5 // Manual Start Pump Command
+= Q0.0 // Start Pump
+
+// Manual Discharge Valve (DV) Control
+A M0.6 // Manual Open DV Command
+= Q0.2 // Open DV
+
+// Manual Valve 1 (V1) Control
+A M0.7 // Manual Open V1 Command
+= Q0.4 // Open V1
+
+// Manual Valve 2 (V2) Control
+A M0.8 // Manual Open V2 Command
+= Q0.5 // Open V2
+```
+
+###### 7. Indicator Lights
+
+Network 6: Indicator Lights
+
+```ladder
+// Indicators
+A Q0.0 // Start Pump
+= Q0.3 // Pump Running
+
+A M0.5
+= Q0.4 // V1 Open
+
+A M0.6
+= Q0.5 // V2 Open
+```
+
+##### Program Summary
+
+- **Safety protections**: Emergency stop and overload conditions immediately stop all operations.
+- **Automatic mode**: System automatically fills Tank 1 or Tank 2 when they are low and the storage tank has water, using interlocks and timers for sequential operation.
+- **Manual mode**: Allows manual control of the pump and valves for maintenance and testing.
+- **Indicator lights**: Provide visual feedback for system status.
+
+This PLC program ensures a robust and reliable control system for the water harvester, capable of handling automatic and manual operations while ensuring safety and efficiency.
+
 ## Question 3 (Total Marks: 25)
 
 **Process Description**  
