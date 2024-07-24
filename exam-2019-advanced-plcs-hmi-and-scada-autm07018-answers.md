@@ -49,7 +49,6 @@ Rockwell Automation has two main PLC programming software:
 1. **RSLogix 5000/Studio 5000**: This software is used for programming Rockwell Automation's ControlLogix and CompactLogix family of controllers.
 2. **RSLogix 500**: This software is used for programming Rockwell Automation's SLC 500 and MicroLogix family of controllers.
 
-
 ### Question 1(b) (20 Marks)
 
 Explain in detail the operation of the sections of the PLC program shown in **Figure.1**
@@ -61,6 +60,29 @@ Explain in detail the operation of the sections of the PLC program shown in **Fi
 ![Q1b3](images/exam-2019-advanced-plcs-hmi-and-scada-autm07018/figure-1-c.jpeg)
 
 > Figure.1
+
+#### Question 1(b) Answer
+
+#### Answer:
+To explain the operation of the PLC program shown in the provided figures, I will analyze each section of the program based on the images provided.
+
+1. **Figure 1-a**:
+   - **Rung 0000**: This rung is controlling the `System R1` relay. The `System R1 Relay Off` condition is checked, and if it is not active (relay is off), the relay is activated. This indicates that the system is initially turned on.
+   - **Rung 0001**: This rung controls the `Left Sequence Control` relay. It checks if `SPMA Extend On Lft` is active. If the `SPMA Extend On Lft` is active, it triggers the `Left Lift Down` sequence and the `PMA Start Lft` sequence.
+   - **Rung 0002**: This rung continues the `Left Sequence Control`. It checks for `SPMA Extend Out` condition and proceeds to activate the `Left Lift Up Position` when `Left Lift Down` sequence is completed.
+
+2. **Figure 1-b**:
+   - **Rung 0003**: This rung handles the `Left Sequence Control`. It checks if `KMC Valve Extend Position` is reached. If true, it continues to `KMC Valve Extend Position`.
+   - **Rung 0004**: This rung handles `Left Sequence Control`. It verifies if `PSM Extend On Lft` and `KMC Valve Extend Position` are active. If both conditions are met, the `Left Sequence` relay is triggered to proceed further.
+   - **Rung 0005**: This rung handles another section of the `Left Sequence Control`. It checks if `ECM Pusher Retract Position` is active and then sets the `Left Lift Down Position` to proceed to the next step in the sequence.
+
+3. **Figure 1-c**:
+   - **Rung 0006**: This rung involves the `Left Sequence Control`. It checks if `ECM Pusher Retract Position` is true, activating the `Left Sequence Control MOP`.
+   - **Rung 0007**: This rung checks for `ECM Pusher Retract Position` and if `Left Lift Down Position` is reached, the `Left Sequence Control` is updated accordingly.
+
+Overall, the program handles a sequential control system for a left lift mechanism. The steps involve extending and retracting various components (e.g., `SPMA`, `KMC Valve`, `ECM Pusher`), and moving the lift up and down based on specific position feedback. The sequences are controlled by checking various position sensors and relays to ensure the correct order of operations.
+
+This detailed analysis provides a comprehensive understanding of how the PLC program manages the sequential operations for the lift mechanism.
 
 ## Question 2 (Total Marks: 25)
 
@@ -212,6 +234,10 @@ The client has requested detailed information in the sections of question 5 belo
 The distance from the furthest control item at the upper lake to the control room is approximately 600 metres. It has been estimated from the current system that approximately 50 fieldbus nodes would be required to connect the existing I/O and control devices in the system. However, future expansion of the control system is anticipated so the client has suggested that at least 50% future expansion capability should be provided on the fieldbus network, in order to accommodate future fieldbus nodes being added to the control system.
 
 1. Suggest a suitable Fieldbus type that would meet the client’s needs. Support your answer with a detailed explanation of how the fieldbus system will function and why this fieldbus type would be suitable for the requested system.
+
+#### Question 4(b) Answer
+
+The client should consider using the **PROFIBUS** fieldbus system. PROFIBUS is a fieldbus network that is widely used in industrial automation systems. It is a digital communication system that allows for the communication of field devices with the control system. PROFIBUS is suitable for the client's system because it is a robust and reliable fieldbus system that can handle the long distances between the control items at the upper lake and the control room. It is also capable of handling a large number of field devices, which makes it suitable for the client's system.
 
 ### Question 4(b) (4 Marks)
 
