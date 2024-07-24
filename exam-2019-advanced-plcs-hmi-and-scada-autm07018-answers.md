@@ -42,6 +42,14 @@ File Name: exam-2019-advanced-plcs-hmi-and-scada-autm07018.md
 
 Identify two Rockwell Automation PLC programming software. Describe how the Rockwell Automation Software communicates with PLCs and I/O devices.
 
+#### Question 1(a) Answer
+
+Rockwell Automation has two main PLC programming software:
+
+1. **RSLogix 5000/Studio 5000**: This software is used for programming Rockwell Automation's ControlLogix and CompactLogix family of controllers.
+2. **RSLogix 500**: This software is used for programming Rockwell Automation's SLC 500 and MicroLogix family of controllers.
+
+
 ### Question 1(b) (20 Marks)
 
 Explain in detail the operation of the sections of the PLC program shown in **Figure.1**
