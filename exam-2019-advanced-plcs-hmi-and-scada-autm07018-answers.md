@@ -927,7 +927,6 @@ Explain the types of data sources that OPC servers communicate with.
 
 #### Question 5(e) Answer
 
-
 **Types of Data Sources OPC Servers Communicate With:**
 
 1. **PLC (Programmable Logic Controllers):**
@@ -951,7 +950,6 @@ Explain the types of data sources that OPC servers communicate with.
    - **Communication:** OPC servers supply data to HMI panels, enabling real-time display and interaction.
 
 By facilitating communication between these data sources and client applications, OPC servers ensure efficient and reliable process control and monitoring.
-
 
 ```mermaid
 graph LR
