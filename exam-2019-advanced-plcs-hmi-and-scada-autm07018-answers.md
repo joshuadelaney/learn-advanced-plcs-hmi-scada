@@ -63,7 +63,6 @@ Explain in detail the operation of the sections of the PLC program shown in **Fi
 
 #### Question 1(b) Answer
 
-#### Answer:
 To explain the operation of the PLC program shown in the provided figures, I will analyze each section of the program based on the images provided.
 
 1. **Figure 1-a**:
@@ -446,7 +445,9 @@ To design a structured program to implement the described application using a Si
 |                                                                |
 |----[ M0.0 ]---------------------------------------------------( Q50.5 )----|
 ```
+
 Explanation:
+
 - If Auto mode is selected (I50.0), set AutoMode (M0.0).
 - If AutoMode (M0.0) is active, turn on the System Running Lamp (Q50.5).
 
@@ -457,10 +458,12 @@ Explanation:
 ```plaintext
 |----[ M0.0 ]----[ I41.3 ]----------------------------------( R MW100 )----|
 ```
+
 Explanation:
+
 - If Auto mode is active (M0.0) and Start button (I41.3) is pressed, reset Sequence Step (MW100) to 0.
 
-**Step 0: Move to Home Position**
+**Step 0: Move to Home Position**  
 
 ```plaintext
 |----[ MW100 == 0 ]----[ I50.0 ]----[ I41.3 ]----------------------------( MW100 = 1 )----|
@@ -469,31 +472,37 @@ Explanation:
 |                                      |
 |----[ I40.5 ]-----------------------------( MW100 = 2 )----|
 ```
+
 Explanation:
+
 - If in Step 0 (MW100 == 0) and Auto mode (I50.0) and Start button (I41.3) are pressed, move to Step 1.
 - In Step 1, if Positioner is not retracted (NOT I40.5), activate Retract Positioner (Q50.2).
 - When Positioner is retracted (I40.5), move to Step 2.
 
-**Step 2: Wait for Part Present**
+**Step 2: Wait for Part Present**  
 
 ```plaintext
 |----[ MW100 == 2 ]----[ I40.0 ]-----------------------------( MW100 = 3 )----|
 ```
+
 Explanation:
+
 - If in Step 2 (MW100 == 2) and Part is present (I40.0), move to Step 3.
 
-**Step 3: Extend Positioner**
+**Step 3: Extend Positioner**  
 
 ```plaintext
 |----[ MW100 == 3 ]-----------------------------( Q50.3 )----|
 |                                      |
 |----[ I40.6 ]-----------------------------( MW100 = 4 )----|
 ```
+
 Explanation:
+
 - If in Step 3 (MW100 == 3), activate Extend Positioner (Q50.3).
 - When Positioner is extended (I40.6), move to Step 4.
 
-**Step 4: Extend Part Pickup and Clamp Part**
+**Step 4: Extend Part Pickup and Clamp Part**  
 
 ```plaintext
 |----[ MW100 == 4 ]-----------------------------( Q50.0 )----|
@@ -502,12 +511,14 @@ Explanation:
 |                                      |
 |----[ I40.4 ]-----------------------------( MW100 = 5 )----|
 ```
+
 Explanation:
+
 - If in Step 4 (MW100 == 4), activate Extend Part Pickup (Q50.0).
 - When Part Pickup is extended (I40.2), activate Clamp (Q50.1).
 - When Clamp is activated (I40.4), move to Step 5.
 
-**Step 5: Retract Part Pickup and Positioner**
+**Step 5: Retract Part Pickup and Positioner**  
 
 ```plaintext
 |----[ MW100 == 5 ]-----------------------------( NOT Q50.0 )----|
@@ -516,12 +527,14 @@ Explanation:
 |                                      |
 |----[ I40.5 ]-----------------------------( MW100 = 6 )----|
 ```
+
 Explanation:
+
 - If in Step 5 (MW100 == 5), deactivate Extend Part Pickup (NOT Q50.0).
 - When Part Pickup is retracted (I40.1), deactivate Extend Positioner (NOT Q50.3).
 - When Positioner is retracted (I40.5), move to Step 6.
 
-**Step 6: Indicate Part in Home Position**
+**Step 6: Indicate Part in Home Position**  
 
 ```plaintext
 |----[ MW100 == 6 ]-----------------------------( M0.1 )----|
@@ -530,7 +543,9 @@ Explanation:
 |                                      |
 |----[ NOT I50.0 ]-----------------------------( MW100 = 0 )----|
 ```
+
 Explanation:
+
 - If in Step 6 (MW100 == 6), set PartInHomePos (M0.1).
 - If Index button (I41.4) is pressed, reset PartInHomePos (NOT M0.1).
 - If Auto mode is deactivated (NOT I50.0), reset sequence to Step 0 (MW100 = 0).
@@ -549,6 +564,7 @@ Explanation:
 ```
 
 Explanation:
+
 - If Emergency Stop (I41.6) or Stop button (I41.5) is pressed, reset sequence to Step 0 (MW100 = 0) and deactivate all outputs.
 
 **Pressure Switch:**
@@ -556,7 +572,9 @@ Explanation:
 ```plaintext
 |----[ NOT I40.7 ]--------------------------------------( MW100 = 0 )----|
 ```
+
 Explanation:
+
 - If Pressure Switch (I40.7) is not active, reset sequence to Step 0 (MW100 = 0).
 
 **Reset Button:**
@@ -564,7 +582,9 @@ Explanation:
 ```plaintext
 |----[ I41.2 ]-----------------------------( MW100 = 0 )----|
 ```
+
 Explanation:
+
 - If Reset button (I41.2) is pressed, reset sequence to Step 0 (MW100 = 0).
 
 This structured Ladder Logic program ensures the safe and correct operation of the described process, fulfilling all the specified requirements and conditions.
@@ -587,24 +607,25 @@ The distance from the furthest control item at the upper lake to the control roo
 
 #### Question 4(a) Answer
 
-**Suggested Fieldbus Type: PROFIBUS-DP**
+**Suggested Fieldbus Type: PROFIBUS-DP**  
 
-##### Explanation of Functionality:
+##### Explanation of Functionality
 
 PROFIBUS-DP (Decentralized Periphery) is a widely used fieldbus system designed for high-speed communication between automation systems and decentralized I/O. It operates on a master-slave architecture, where the master controls the communication on the bus and the slaves respond to the master's requests.
 
 **How the System Functions:**
+
 - **Master-Slave Communication:** The PROFIBUS-DP master initiates communication with the slaves. Each slave has a unique address, and the master sends data to and requests data from the slaves in a cyclic manner.
 - **Cyclic Data Exchange:** The master sends output data to the slaves and receives input data in return. This exchange happens in predefined cycles, ensuring real-time communication.
 - **Data Transmission Speed:** PROFIBUS-DP can achieve data transmission speeds up to 12 Mbps, suitable for real-time control applications.
 - **Network Topology:** The network can be configured in a line, tree, or star topology, providing flexibility in physical layout.
 
 **Suitability for the Requested System:**
+
 - **Distance and Nodes:** PROFIBUS-DP supports cable lengths up to 1200 meters at lower speeds, which fits the 600-meter requirement. It can handle up to 126 nodes on a single network, supporting current and future expansion needs (up to 75 nodes as per 50% future expansion requirement).
 - **Robustness:** It is designed for industrial environments, offering high reliability and noise immunity, which is critical for a hydroelectric system.
 - **Scalability:** The ability to add additional nodes easily makes it suitable for systems anticipating future expansion.
 - **Interoperability:** PROFIBUS-DP is widely supported by many device manufacturers, ensuring compatibility and integration ease.
-
 
 The client should consider using the **PROFIBUS** fieldbus system. PROFIBUS is a fieldbus network that is widely used in industrial automation systems. It is a digital communication system that allows for the communication of field devices with the control system. PROFIBUS is suitable for the client's system because it is a robust and reliable fieldbus system that can handle the long distances between the control items at the upper lake and the control room. It is also capable of handling a large number of field devices, which makes it suitable for the client's system.
 
@@ -613,7 +634,6 @@ The client should consider using the **PROFIBUS** fieldbus system. PROFIBUS is a
 Give possible advantages and disadvantages of using fieldbus in this hydroelectric system and support your answer with a brief explanation for each suggestion.
 
 #### Question 4(b) Answer
-
 
 **Advantages of Using Fieldbus:**
 
@@ -657,7 +677,6 @@ Describe and illustrate the chosen fieldbus cable in detail. Show the location o
 
 #### Question 4(c) Answer
 
-
 **Fieldbus Cable Description:**
 
 - **Cable Type:** Shielded twisted pair cable, specifically designed for PROFIBUS-DP.
@@ -672,34 +691,34 @@ Describe and illustrate the chosen fieldbus cable in detail. Show the location o
 - **Value:** Typically, 220 ohms resistors are used to match the cable impedance.
 - **Purpose:** Terminating resistors prevent signal reflections that can cause communication errors.
 
-#### Illustration of Fieldbus Cable and Terminating Resistors:
+#### Illustration of Fieldbus Cable and Terminating Resistors
 
 ```plaintext
- Control Room                            Upper Lake
+Control Room                         Upper Lake
 +---------------------------------------------+
 |                                             |
-| PROFIBUS Master                            |
+| PROFIBUS Master                             |
 |                                             |
 +-----+---------------------------------------+
       |                                       |
       |                                       |
       |   -----------------------------       |
       |   |                           |       |
-      |   | Terminating Resistor (220Ω)|       |
-      |   +-----------------------------       |
+      |   | Terminating Resistor (220Ω)|      |
+      |   +-----------------------------      |
       |                                       |
       |------ PROFIBUS-DP Cable (600m) -------|
       |                                       |
       |                                       |
       |   -----------------------------       |
       |   |                           |       |
-      |   | Terminating Resistor (220Ω)|       |
-      |   +-----------------------------       |
+      |   | Terminating Resistor (220Ω)|      |
+      |   +-----------------------------      |
       |                                       |
       +---------------------------------------+
       |                                       |
 +-----+                                       |
-| PROFIBUS Slaves                            |
+| PROFIBUS Slaves                             |
 |                                             |
 +---------------------------------------------+
 ```
@@ -715,7 +734,6 @@ diagrams how cyclic communication would be initiated and controlled in:
 
 #### Question 4(d) Answer
 
-
 ##### 1. Single Master System Communicating with Slaves
 
 **Diagram:**
@@ -728,12 +746,13 @@ diagrams how cyclic communication would be initiated and controlled in:
    +-----------+              |              |
                               |              |
                               +---------+    +---------+
-                                        |    | Slave N  |
+                                        |    | Slave N |
                                         +----|         |
                                              +---------+
 ```
 
 **Explanation:**
+
 - The single master controls all communication on the bus.
 - The master polls each slave cyclically, sending output data and requesting input data.
 - Each slave responds with its data during its assigned time slot.
@@ -767,6 +786,7 @@ diagrams how cyclic communication would be initiated and controlled in:
 ```
 
 **Explanation:**
+
 - Multiple masters share the same bus, each controlling its own set of slaves.
 - Masters coordinate access to the bus using a token-passing mechanism to prevent collisions.
 - Each master has a predefined time slot to communicate with its slaves.
@@ -811,12 +831,13 @@ A Piping and Instrumentation Diagram (P&ID) is a detailed graphical representati
 
 **Example of Device Tag Descriptors and Numbering:**
 
-Device tag descriptors and numbering on a P&ID provide unique identifiers and descriptive information for each instrument and control device. 
+Device tag descriptors and numbering on a P&ID provide unique identifiers and descriptive information for each instrument and control device.
 
 - **Tag Descriptor:** Typically a combination of letters and numbers that describe the type of instrument and its function. For example, "FT" could represent a flow transmitter.
 - **Numbering:** A unique identifier following the descriptor, often indicating the specific loop or sequence in the system. For example, "FT-101" would be a flow transmitter in loop 101.
 
 Example:
+
 - **Tag: FT-101**
   - **FT:** Flow Transmitter
   - **101:** Loop number 101
@@ -843,7 +864,6 @@ graph TD
 3. List the instrument location when a broken line is present.
 
 #### Question 5(b) Answer
-
 
 **Instrument Location on a P&ID Diagram:**
 
@@ -893,7 +913,6 @@ explanation, illustrating the conceptual view of the inner workings of the OPC s
 
 #### Question 5(d) Answer
 
-
 **Functionality of an OPC Server:**
 
 An OPC server acts as an intermediary between various hardware devices and software applications. It collects data from the devices, processes it, and makes it available to client applications.
@@ -901,17 +920,17 @@ An OPC server acts as an intermediary between various hardware devices and softw
 **Diagram:**
 
 ```plaintext
-+------------------+       +---------------+       +-----------------+
-|  Field Devices   |<----->|    OPC Server |<----->| Client Software |
-| (Sensors, PLCs)  |       +---------------+       |  (SCADA, HMI)   |
-|                  |       |               |       |                 |
-+------------------+       | - Collects    |       | - Displays Data |
-                           |   Data        |       | - Analyzes Data |
-                           | - Processes   |       | - Issues Commands|
-                           |   Data        |       |                 |
-                           | - Manages     |       +-----------------+
-                           |   Communication|
-                           +---------------+
++------------------+       +-----------------+       +-------------------+
+|  Field Devices   |<----->|    OPC Server   |<----->| Client Software   |
+| (Sensors, PLCs)  |       +-----------------+       |  (SCADA, HMI)     |
+|                  |       |                 |       |                   |
++------------------+       | - Collects      |       | - Displays Data   |
+                           |   Data          |       | - Analyzes Data   |
+                           | - Processes     |       | - Issues Commands |
+                           |   Data          |       |                   |
+                           | - Manages       |       +-------------------+
+                           |   Communication |
+                           +-----------------+
 ```
 
 **Explanation:**
